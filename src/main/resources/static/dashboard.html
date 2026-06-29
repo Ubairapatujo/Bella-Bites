@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bella Bites — Bakery Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8F2;
+    --beige:#F5E9DD;
+    --panel:#FFFFFF;
+    --rose-gold:#C9A27E;
+    --rose-gold-light:#E8D5C4;
+    --rose-deep:#B17B57;
+    --mint:#BFE3D0;
+    --ink:#3F332C;
+    --ink-soft:#9A8A7E;
+    --line:#EFE2D4;
+    --shadow: 0 12px 32px -14px rgba(180, 140, 100, 0.28);
+    --shadow-soft: 0 4px 16px -8px rgba(180, 140, 100, 0.2);
+    --radius: 20px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Poppins', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Playfair Display', serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+
+  .app{
+    display:grid;
+    grid-template-columns: 270px 1fr;
+    min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--beige) 130%);
+    border-right:1px solid var(--line);
+    padding:30px 18px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    position:sticky;
+    top:0;
+    height:100vh;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:6px 10px 28px 10px;
+  }
+  .brand-mark{
+    width:42px;height:42px;border-radius:14px;
+    background: linear-gradient(135deg, var(--rose-gold), var(--rose-deep));
+    display:flex;align-items:center;justify-content:center;
+    font-size:19px;
+    box-shadow: var(--shadow);
+    flex-shrink:0;
+  }
+  .brand-text h1{font-size:20px;color:var(--ink);}
+  .brand-text span{font-size:10.5px;color:var(--ink-soft);letter-spacing:0.1em;text-transform:uppercase;}
+
+  .nav-label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.12em;
+    color:var(--ink-soft);
+    margin:20px 12px 10px 12px;
+    font-weight:600;
+  }
+
+  .nav-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:12px 15px;
+    border-radius:13px;
+    color:var(--ink);
+    text-decoration:none;
+    font-size:14.5px;
+    font-weight:500;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:.18s ease;
+    background:transparent;
+  }
+  .nav-item .ic{font-size:17px; width:20px; text-align:center;}
+  .nav-item:hover{background:#FFFFFF; border-color:var(--line); transform:translateX(2px);}
+  .nav-item.active{
+    background: linear-gradient(135deg, #FFFFFF, var(--rose-gold-light));
+    border-color:var(--rose-gold-light);
+    box-shadow: var(--shadow-soft);
+    color:var(--rose-deep);
+    font-weight:600;
+  }
+
+  .sidebar-foot{
+    margin-top:auto;
+    padding:18px;
+    border-radius:16px;
+    background: linear-gradient(135deg, #FFFFFF, var(--beige));
+    border:1px solid var(--line);
+    text-align:center;
+  }
+  .sidebar-foot .status-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:#6FBF8B; display:inline-block; margin-right:6px;
+    box-shadow:0 0 0 4px rgba(111,191,139,0.18);
+  }
+  .sidebar-foot .status-text{font-size:12px; font-weight:600; color:var(--ink);}
+  .sidebar-foot .status-sub{font-size:10.5px; color:var(--ink-soft); margin-top:4px;}
+
+  /* ---------- Main ---------- */
+  .main{
+    padding:36px 44px 60px 44px;
+    max-width:1220px;
+  }
+
+  .topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:32px;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+  .topbar h2{font-size:32px;color:var(--ink); font-weight:700;}
+  .topbar p{margin:8px 0 0 0; color:var(--ink-soft); font-size:14.5px;}
+
+  .pill-status{
+    display:flex;align-items:center;gap:8px;
+    background:#fff;border:1px solid var(--line);
+    padding:10px 18px;border-radius:999px;
+    font-size:13px; color:var(--ink-soft); font-weight:500;
+    box-shadow: var(--shadow-soft);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:#6FBF8B;}
+
+  /* ---------- Sections ---------- */
+  .view{display:none;}
+  .view.active{display:block; animation: fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:18px;
+    margin-bottom:30px;
+  }
+  .stat-card{
+    background: linear-gradient(150deg, #FFFFFF, #FFFCF9);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 24px;
+    box-shadow: var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .stat-card::after{
+    content:'';
+    position:absolute; top:-20px; right:-20px;
+    width:80px; height:80px; border-radius:50%;
+    background: radial-gradient(circle, var(--rose-gold-light), transparent 70%);
+    opacity:0.5;
+  }
+  .stat-card .ic-wrap{font-size:22px; margin-bottom:10px;}
+  .stat-card .num{font-family:'Playfair Display',serif; font-size:32px; color:var(--ink); font-weight:700;}
+  .stat-card .lbl{font-size:12.5px; color:var(--ink-soft); margin-top:5px; font-weight:500;}
+
+  .grid-2{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:22px;
+  }
+  .grid-3{
+    display:grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap:22px;
+  }
+
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:26px;
+    box-shadow: var(--shadow);
+    margin-bottom:22px;
+    transition:.2s ease;
+  }
+  .card-head{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:20px;
+  }
+  .card-head h3{font-size:18.5px; font-weight:600;}
+  .card-head .tag{
+    font-size:11px; padding:5px 12px; border-radius:999px;
+    background:var(--beige); color:var(--rose-deep); font-weight:600;
+  }
+
+  .field{margin-bottom:15px;}
+  .field label{
+    display:block; font-size:12.5px; font-weight:600;
+    color:var(--ink-soft); margin-bottom:7px;
+  }
+  .field input, .field select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:#FFFDFB;
+    font-family:'Poppins',sans-serif;
+    font-size:14px;
+    color:var(--ink);
+    outline:none;
+    transition:.15s;
+  }
+  .field input:focus, .field select:focus{
+    border-color:var(--rose-gold);
+    background:#fff;
+    box-shadow:0 0 0 4px rgba(201,162,126,0.16);
+  }
+  .field input::placeholder{color:#C7B7A9;}
+
+  .btn{
+    width:100%;
+    padding:13px 16px;
+    border:none;
+    border-radius:12px;
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    font-size:14.5px;
+    cursor:pointer;
+    transition:.18s;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+  }
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background: linear-gradient(135deg, var(--rose-gold), var(--rose-deep)); color:#fff;}
+  .btn-mint{background: linear-gradient(135deg, #9FD9B9, var(--mint)); color:#2E5B41;}
+  .btn:hover{filter:brightness(1.05); box-shadow:0 10px 22px -10px rgba(177,123,87,0.45); transform:translateY(-1px);}
+
+  .msg{font-size:12.5px; margin-top:11px; min-height:16px; font-weight:600;}
+  .msg.ok{color:#3F9760;}
+  .msg.err{color:#C9586E;}
+
+  /* ---------- Tables ---------- */
+  table{width:100%; border-collapse:collapse;}
+  thead th{
+    text-align:left;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.07em;
+    color:var(--ink-soft);
+    padding:0 12px 12px 12px;
+    border-bottom:2px solid var(--beige);
+    font-weight:700;
+  }
+  tbody td{
+    padding:14px 12px;
+    font-size:14px;
+    border-bottom:1px solid var(--beige);
+    color:var(--ink);
+  }
+  tbody tr:hover{background:#FFFAF5;}
+  tbody tr:last-child td{border-bottom:none;}
+
+  .badge{
+    display:inline-block; padding:4px 11px; border-radius:999px;
+    font-size:11.5px; font-weight:700;
+  }
+  .badge.good{background:#E3F5EA; color:#2E7D4F;}
+  .badge.low{background:#FCEAEA; color:#C24545;}
+
+  .icon-btn{
+    border:none; background:#FCEAEA; color:#C24545;
+    width:32px; height:32px; border-radius:10px;
+    cursor:pointer; font-size:13px;
+    display:inline-flex; align-items:center; justify-content:center;
+    transition:.15s;
+  }
+  .icon-btn:hover{background:#F8D4D4; transform:scale(1.05);}
+
+  .empty-state{
+    text-align:center;
+    padding:46px 20px;
+    color:var(--ink-soft);
+  }
+  .empty-state .ic{font-size:34px; margin-bottom:10px; opacity:0.6;}
+  .empty-state .title{font-size:14px; font-weight:600; color:var(--ink); margin-bottom:4px;}
+  .empty-state .sub{font-size:12.5px;}
+
+  .empty-row td{padding:0;}
+
+  .refresh-link{
+    background:none; border:none; cursor:pointer;
+    color:var(--rose-deep); font-weight:600; font-size:13px;
+    display:flex; align-items:center; gap:6px;
+    padding:6px 4px;
+  }
+  .refresh-link:hover{opacity:0.7;}
+
+  /* ---------- Best Sellers list ---------- */
+  .seller-row{
+    display:flex; align-items:center; gap:14px;
+    padding:13px 0; border-bottom:1px solid var(--beige);
+  }
+  .seller-row:last-child{border-bottom:none;}
+  .seller-rank{
+    width:30px; height:30px; border-radius:9px;
+    background: linear-gradient(135deg, var(--rose-gold-light), var(--beige));
+    display:flex; align-items:center; justify-content:center;
+    font-size:12.5px; font-weight:700; color:var(--rose-deep);
+    flex-shrink:0;
+  }
+  .seller-info{flex:1;}
+  .seller-info .name{font-size:14px; font-weight:600; color:var(--ink);}
+  .seller-info .meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+  .seller-price{font-size:14px; font-weight:700; color:var(--rose-deep);}
+
+  @media (max-width: 900px){
+    .app{grid-template-columns: 1fr;}
+    .sidebar{position:relative; height:auto;}
+    .grid-2,.grid-3,.stat-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">🍓</div>
+      <div class="brand-text">
+        <h1>Bella Bites</h1>
+        <span>Bakery Management</span>
+      </div>
+    </div>
+
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" data-view="overview"><span class="ic">🏠</span> Home</div>
+
+    <div class="nav-label">Manage</div>
+    <div class="nav-item" data-view="products"><span class="ic">🧁</span> Products</div>
+    <div class="nav-item" data-view="customers"><span class="ic">🧑‍🤝‍🧑</span> Customers</div>
+    <div class="nav-item" data-view="employees"><span class="ic">👩‍🍳</span> Staff</div>
+    <div class="nav-item" data-view="categories"><span class="ic">🏷️</span> Categories</div>
+
+    <div class="nav-label">Sales</div>
+    <div class="nav-item" data-view="orders"><span class="ic">🧾</span> Orders</div>
+
+    <div class="sidebar-foot">
+      <div><span class="status-dot"></span><span class="status-text">Operational</span></div>
+      <div class="status-sub">All systems running smoothly</div>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+
+    <div class="topbar">
+      <div>
+        <h2 id="pageTitle">Welcome back, Bella Bites Team ✨</h2>
+        <p id="pageSub">Today's bakery performance at a glance.</p>
+      </div>
+      <div class="pill-status"><span class="dot"></span> Online</div>
+    </div>
+
+    <!-- ================= OVERVIEW ================= -->
+    <section class="view active" id="view-overview">
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="ic-wrap">🧁</div>
+          <div class="num" id="statProducts">–</div>
+          <div class="lbl">Total Products</div>
+        </div>
+        <div class="stat-card">
+          <div class="ic-wrap">🧑‍🤝‍🧑</div>
+          <div class="num" id="statCustomers">–</div>
+          <div class="lbl">Active Customers</div>
+        </div>
+        <div class="stat-card">
+          <div class="ic-wrap">👩‍🍳</div>
+          <div class="num" id="statEmployees">–</div>
+          <div class="lbl">Team Members</div>
+        </div>
+        <div class="stat-card">
+          <div class="ic-wrap">💰</div>
+          <div class="num" id="statRevenue">Rs. 0</div>
+          <div class="lbl">Total Revenue</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head">
+            <h3>🏆 Best Selling Products</h3>
+            <span class="tag">By Stock Sold</span>
+          </div>
+          <div id="bestSellers"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>🧾 Recent Orders</h3>
+            <span class="tag">Latest Activity</span>
+          </div>
+          <table>
+            <thead><tr><th>Customer</th><th>Date</th><th>Amount</th></tr></thead>
+            <tbody id="recentOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= PRODUCTS ================= -->
+    <section class="view" id="view-products">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>🧁 Add New Product</h3></div>
+          <div class="field"><label>Product Name</label><input id="p_name" placeholder="e.g. Pineapple Cake"></div>
+          <div class="field"><label>Price (PKR)</label><input id="p_price" type="number" placeholder="e.g. 600"></div>
+          <div class="field"><label>Stock Quantity</label><input id="p_stock" type="number" placeholder="e.g. 15"></div>
+          <button class="btn btn-primary" onclick="saveProduct()">+ Save Product</button>
+          <div class="msg" id="p_msg"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>📦 Inventory</h3>
+            <button class="refresh-link" onclick="loadProducts()">⟳ Refresh</button>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Price</th><th>Stock</th><th></th></tr></thead>
+            <tbody id="productBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CUSTOMERS ================= -->
+    <section class="view" id="view-customers">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>🧑‍🤝‍🧑 Add New Customer</h3></div>
+          <div class="field"><label>Full Name</label><input id="c_name" placeholder="e.g. John Smith"></div>
+          <div class="field"><label>Phone Number</label><input id="c_phone" placeholder="e.g. 0300-1122334"></div>
+          <button class="btn btn-primary" onclick="saveCustomer()">+ Save Customer</button>
+          <div class="msg" id="c_msg"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>📇 Customer List</h3>
+            <button class="refresh-link" onclick="loadCustomers()">⟳ Refresh</button>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Phone</th><th></th></tr></thead>
+            <tbody id="customerBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= EMPLOYEES ================= -->
+    <section class="view" id="view-employees">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>👩‍🍳 Add New Staff Member</h3></div>
+          <div class="field"><label>Employee Name</label><input id="e_name" placeholder="e.g. Sarah Williams"></div>
+          <div class="field"><label>Role / Position</label><input id="e_role" placeholder="e.g. Baker / Cashier"></div>
+          <div class="field"><label>Salary (PKR)</label><input id="e_salary" type="number" placeholder="e.g. 35000"></div>
+          <button class="btn btn-primary" onclick="saveEmployee()">+ Save Staff Member</button>
+          <div class="msg" id="e_msg"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>🧑‍💼 Team List</h3>
+            <button class="refresh-link" onclick="loadEmployees()">⟳ Refresh</button>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Role</th><th>Salary</th><th></th></tr></thead>
+            <tbody id="employeeBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CATEGORIES ================= -->
+    <section class="view" id="view-categories">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-head"><h3>🏷️ Add New Category</h3></div>
+          <div class="field"><label>Category Name</label><input id="cat_name" placeholder="e.g. Cakes"></div>
+          <div class="field"><label>Description</label><input id="cat_desc" placeholder="e.g. All celebration cakes"></div>
+          <button class="btn btn-mint" onclick="saveCategory()">+ Save Category</button>
+          <div class="msg" id="cat_msg"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h3>📋 Category List</h3>
+            <button class="refresh-link" onclick="loadCategories()">⟳ Refresh</button>
+          </div>
+          <table>
+            <thead><tr><th>Name</th><th>Description</th><th></th></tr></thead>
+            <tbody id="categoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ORDERS ================= -->
+    <section class="view" id="view-orders">
+      <div class="card">
+        <div class="card-head"><h3>🧾 Place New Order</h3></div>
+        <div class="grid-3">
+          <div class="field"><label>Select Customer</label><select id="o_customer"></select></div>
+          <div class="field"><label>Total Amount (PKR)</label><input id="o_amount" type="number" placeholder="e.g. 1200"></div>
+          <div class="field" style="display:flex; align-items:flex-end;">
+            <button class="btn btn-primary" onclick="saveOrder()">+ Place Order</button>
+          </div>
+        </div>
+        <div class="msg" id="o_msg"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>🗂️ Order History</h3>
+          <button class="refresh-link" onclick="loadOrders()">⟳ Refresh</button>
+        </div>
+        <table>
+          <thead><tr><th>Order ID</th><th>Date &amp; Time</th><th>Customer</th><th>Total</th><th></th></tr></thead>
+          <tbody id="orderBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const API = "http://localhost:8080";
+
+const titles = {
+  overview:  ["Welcome back, Bella Bites Team ✨", "Today's bakery performance at a glance."],
+  products:  ["Products", "Manage your bakery items and stock."],
+  customers: ["Customers", "Your customer records."],
+  employees: ["Staff", "Your team and their roles."],
+  categories:["Categories", "Organize your products."],
+  orders:    ["Orders", "Place and track customer orders."]
+};
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    item.classList.add('active');
+    const view = item.dataset.view;
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    document.getElementById('view-'+view).classList.add('active');
+    document.getElementById('pageTitle').textContent = titles[view][0];
+    document.getElementById('pageSub').textContent = titles[view][1];
+
+    if(view==='products') loadProducts();
+    if(view==='customers') loadCustomers();
+    if(view==='employees') loadEmployees();
+    if(view==='categories') loadCategories();
+    if(view==='orders'){ loadOrders(); loadCustomerDropdown(); }
+  });
+});
+
+function showMsg(id, text, ok=true){
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.className = 'msg ' + (ok ? 'ok' : 'err');
+  setTimeout(()=>{ el.textContent=''; }, 3000);
+}
+
+function emptyState(icon, title, sub){
+  return `<tr class="empty-row"><td colspan="6">
+    <div class="empty-state">
+      <div class="ic">${icon}</div>
+      <div class="title">${title}</div>
+      <div class="sub">${sub}</div>
+    </div>
+  </td></tr>`;
+}
+
+async function getData(url){
+  const res = await fetch(API + url);
+  if(!res.ok) throw new Error('Fetch failed');
+  return res.json();
+}
+async function postData(url, body){
+  const res = await fetch(API + url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  if(!res.ok) throw new Error('Save failed');
+  return res.json();
+}
+async function deleteData(url){
+  const res = await fetch(API + url, { method:'DELETE' });
+  return res.ok;
+}
+
+/* ---------------- PRODUCTS ---------------- */
+let productsCache = [];
+
+async function loadProducts(){
+  try{
+    const data = await getData('/products');
+    productsCache = data;
+    document.getElementById('statProducts').textContent = data.length;
+    const body = document.getElementById('productBody');
+
+    if(data.length===0){
+      body.innerHTML = emptyState('🧁','No products yet','Add your first item to get started');
+    } else {
+      body.innerHTML = data.map(p => `
+        <tr>
+          <td>${p.productName ?? ''}</td>
+          <td>Rs. ${p.price ?? 0}</td>
+          <td>${ p.stockQty < 5
+                ? `<span class="badge low">${p.stockQty} left</span>`
+                : `<span class="badge good">${p.stockQty} in stock</span>` }</td>
+          <td><button class="icon-btn" onclick="deleteProduct(${p.productId})">✕</button></td>
+        </tr>`).join('');
+    }
+
+    renderBestSellers(data);
+  }catch(e){
+    document.getElementById('productBody').innerHTML = emptyState('⚠️','Unable to load products','Please check your connection and try again');
+  }
+}
+
+function renderBestSellers(data){
+  const wrap = document.getElementById('bestSellers');
+  if(!data || data.length===0){
+    wrap.innerHTML = `<div class="empty-state"><div class="ic">🏆</div><div class="title">No products yet</div><div class="sub">Best sellers will appear once you add products</div></div>`;
+    return;
+  }
+  const sorted = [...data].sort((a,b)=> (b.price*b.stockQty) - (a.price*a.stockQty)).slice(0,5);
+  wrap.innerHTML = sorted.map((p,i)=>`
+    <div class="seller-row">
+      <div class="seller-rank">${i+1}</div>
+      <div class="seller-info">
+        <div class="name">${p.productName}</div>
+        <div class="meta">${p.stockQty} in stock</div>
+      </div>
+      <div class="seller-price">Rs. ${p.price}</div>
+    </div>
+  `).join('');
+}
+
+async function saveProduct(){
+  const name = document.getElementById('p_name').value.trim();
+  const price = document.getElementById('p_price').value;
+  const stock = document.getElementById('p_stock').value;
+  if(!name || !price || !stock){ showMsg('p_msg','Fill in all fields.', false); return; }
+
+  try{
+    await postData('/products', { productName:name, price:Number(price), stockQty:Number(stock) });
+    showMsg('p_msg','Product saved.', true);
+    document.getElementById('p_name').value='';
+    document.getElementById('p_price').value='';
+    document.getElementById('p_stock').value='';
+    loadProducts();
+  }catch(e){ showMsg('p_msg','Save failed. Try again.', false); }
+}
+
+async function deleteProduct(id){
+  if(await deleteData('/products/'+id)) loadProducts();
+}
+
+/* ---------------- CUSTOMERS ---------------- */
+async function loadCustomers(){
+  try{
+    const data = await getData('/customers');
+    document.getElementById('statCustomers').textContent = data.length;
+    const body = document.getElementById('customerBody');
+    if(data.length===0){
+      body.innerHTML = emptyState('🧑‍🤝‍🧑','No customers yet','Add your first customer above');
+      return;
+    }
+    body.innerHTML = data.map(c => `
+      <tr>
+        <td>${c.fullName ?? ''}</td>
+        <td>${c.phone ?? ''}</td>
+        <td><button class="icon-btn" onclick="deleteCustomer(${c.customerId})">✕</button></td>
+      </tr>`).join('');
+  }catch(e){
+    document.getElementById('customerBody').innerHTML = emptyState('⚠️','Unable to load customers','Please check your connection and try again');
+  }
+}
+
+async function saveCustomer(){
+  const name = document.getElementById('c_name').value.trim();
+  const phone = document.getElementById('c_phone').value.trim();
+  if(!name || !phone){ showMsg('c_msg','Fill in all fields.', false); return; }
+
+  try{
+    await postData('/customers', { fullName:name, phone:phone });
+    showMsg('c_msg','Customer saved.', true);
+    document.getElementById('c_name').value='';
+    document.getElementById('c_phone').value='';
+    loadCustomers();
+  }catch(e){ showMsg('c_msg','Save failed.', false); }
+}
+
+async function deleteCustomer(id){
+  if(await deleteData('/customers/'+id)) loadCustomers();
+}
+
+/* ---------------- EMPLOYEES ---------------- */
+async function loadEmployees(){
+  try{
+    const data = await getData('/employees');
+    document.getElementById('statEmployees').textContent = data.length;
+    const body = document.getElementById('employeeBody');
+    if(data.length===0){
+      body.innerHTML = emptyState('👩‍🍳','No staff added yet','Add your first team member above');
+      return;
+    }
+    body.innerHTML = data.map(e => `
+      <tr>
+        <td>${e.employeeName ?? e.fullName ?? ''}</td>
+        <td>${e.role ?? ''}</td>
+        <td>Rs. ${e.salary ?? 0}</td>
+        <td><button class="icon-btn" onclick="deleteEmployee(${e.employeeId})">✕</button></td>
+      </tr>`).join('');
+  }catch(e){
+    document.getElementById('employeeBody').innerHTML = emptyState('⚠️','Unable to load staff','Please check your connection and try again');
+  }
+}
+
+async function saveEmployee(){
+  const name = document.getElementById('e_name').value.trim();
+  const role = document.getElementById('e_role').value.trim();
+  const salary = document.getElementById('e_salary').value;
+  if(!name || !role || !salary){ showMsg('e_msg','Fill in all fields.', false); return; }
+
+  try{
+    await postData('/employees', { employeeName:name, role:role, salary:Number(salary) });
+    showMsg('e_msg','Staff member saved.', true);
+    document.getElementById('e_name').value='';
+    document.getElementById('e_role').value='';
+    document.getElementById('e_salary').value='';
+    loadEmployees();
+  }catch(e){ showMsg('e_msg','Save failed.', false); }
+}
+
+async function deleteEmployee(id){
+  if(await deleteData('/employees/'+id)) loadEmployees();
+}
+
+/* ---------------- CATEGORIES ---------------- */
+async function loadCategories(){
+  try{
+    const data = await getData('/categories');
+    const body = document.getElementById('categoryBody');
+    if(data.length===0){
+      body.innerHTML = emptyState('🏷️','No categories yet','Add your first category above');
+      return;
+    }
+    body.innerHTML = data.map(c => `
+      <tr>
+        <td>${c.categoryName ?? ''}</td>
+        <td>${c.description ?? ''}</td>
+        <td><button class="icon-btn" onclick="deleteCategory(${c.categoryId})">✕</button></td>
+      </tr>`).join('');
+  }catch(e){
+    document.getElementById('categoryBody').innerHTML = emptyState('⚠️','Unable to load categories','Please check your connection and try again');
+  }
+}
+
+async function saveCategory(){
+  const name = document.getElementById('cat_name').value.trim();
+  const desc = document.getElementById('cat_desc').value.trim();
+  if(!name){ showMsg('cat_msg','Enter a category name.', false); return; }
+
+  try{
+    await postData('/categories', { categoryName:name, description:desc });
+    showMsg('cat_msg','Category saved.', true);
+    document.getElementById('cat_name').value='';
+    document.getElementById('cat_desc').value='';
+    loadCategories();
+  }catch(e){ showMsg('cat_msg','Save failed.', false); }
+}
+
+async function deleteCategory(id){
+  if(await deleteData('/categories/'+id)) loadCategories();
+}
+
+/* ---------------- ORDERS ---------------- */
+async function loadCustomerDropdown(){
+  try{
+    const data = await getData('/customers');
+    const sel = document.getElementById('o_customer');
+    sel.innerHTML = data.map(c => `<option value="${c.customerId}">${c.fullName}</option>`).join('');
+  }catch(e){}
+}
+
+async function loadOrders(){
+  try{
+    const data = await getData('/orders');
+    document.getElementById('statOrders') && (document.getElementById('statOrders').textContent = data.length);
+
+    const totalRevenue = data.reduce((sum,o)=> sum + (Number(o.totalAmount)||0), 0);
+    document.getElementById('statRevenue').textContent = 'Rs. ' + totalRevenue.toLocaleString();
+
+    const body = document.getElementById('orderBody');
+    if(data.length===0){
+      body.innerHTML = emptyState('🧾','No orders yet','Place your first order to see it here');
+    } else {
+      body.innerHTML = data.map(o => `
+        <tr>
+          <td>#${o.orderId}</td>
+          <td>${o.orderDate ? new Date(o.orderDate).toLocaleString() : ''}</td>
+          <td>${o.customer ? o.customer.fullName : ''}</td>
+          <td>Rs. ${o.totalAmount ?? 0}</td>
+          <td><button class="icon-btn" onclick="deleteOrder(${o.orderId})">✕</button></td>
+        </tr>`).join('');
+    }
+
+    const recentBody = document.getElementById('recentOrdersBody');
+    if(data.length===0){
+      recentBody.innerHTML = emptyState('🧾','No recent orders','New orders will show up here');
+    } else {
+      recentBody.innerHTML = data.slice(-5).reverse().map(o => `
+        <tr>
+          <td>${o.customer ? o.customer.fullName : 'Unknown'}</td>
+          <td>${o.orderDate ? new Date(o.orderDate).toLocaleDateString() : ''}</td>
+          <td>Rs. ${o.totalAmount ?? 0}</td>
+        </tr>`).join('');
+    }
+  }catch(e){
+    document.getElementById('orderBody').innerHTML = emptyState('⚠️','Unable to load orders','Please check your connection and try again');
+    document.getElementById('recentOrdersBody').innerHTML = emptyState('⚠️','Unable to load orders','Please check your connection and try again');
+  }
+}
+
+async function saveOrder(){
+  const customerId = document.getElementById('o_customer').value;
+  const amount = document.getElementById('o_amount').value;
+  if(!customerId || !amount){ showMsg('o_msg','Select a customer and enter an amount.', false); return; }
+
+  try{
+    await postData('/orders', { customer:{customerId:Number(customerId)}, totalAmount:Number(amount) });
+    showMsg('o_msg','Order placed.', true);
+    document.getElementById('o_amount').value='';
+    loadOrders();
+  }catch(e){ showMsg('o_msg','Order could not be placed.', false); }
+}
+
+async function deleteOrder(id){
+  if(await deleteData('/orders/'+id)) loadOrders();
+}
+
+/* ---------------- Initial Load ---------------- */
+loadProducts();
+loadCustomers();
+loadEmployees();
+loadOrders();
+</script>
+
+</body>
+</html>

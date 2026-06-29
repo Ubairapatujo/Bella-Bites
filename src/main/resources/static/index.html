@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bella Bites — Fresh Baked with Love</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8F2;
+    --beige:#F5E9DD;
+    --rose-gold:#C9A27E;
+    --rose-deep:#B17B57;
+    --ink:#3F332C;
+    --ink-soft:#9A8A7E;
+    --line:#EFE2D4;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Poppins', sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:22px 60px;
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    position:sticky;
+    top:0;
+    z-index:100;
+  }
+  .nav-brand{
+    font-family:'Playfair Display', serif;
+    font-size:22px;
+    font-weight:700;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .nav-links{
+    display:flex;
+    gap:34px;
+    list-style:none;
+  }
+  .nav-links a{
+    text-decoration:none;
+    font-size:14px;
+    font-weight:500;
+    color:var(--ink-soft);
+    transition:.15s;
+  }
+  .nav-links a:hover{color:var(--rose-deep);}
+  .nav-btn{
+    background: linear-gradient(135deg, var(--rose-gold), var(--rose-deep));
+    color:#fff;
+    border:none;
+    padding:10px 22px;
+    border-radius:999px;
+    font-family:'Poppins', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.18s;
+  }
+  .nav-btn:hover{filter:brightness(1.06); transform:translateY(-1px);}
+  .hero{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    align-items:center;
+    min-height:88vh;
+    padding:60px 60px 60px 80px;
+    gap:60px;
+  }
+  .hero-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--beige);
+    color:var(--rose-deep);
+    font-size:12.5px;
+    font-weight:600;
+    padding:7px 16px;
+    border-radius:999px;
+    margin-bottom:24px;
+    letter-spacing:0.04em;
+  }
+  .hero h1{
+    font-family:'Playfair Display', serif;
+    font-size:58px;
+    font-weight:800;
+    color:var(--ink);
+    line-height:1.12;
+    margin-bottom:20px;
+  }
+  .hero h1 span{color:var(--rose-deep);}
+  .hero p{
+    font-size:16px;
+    color:var(--ink-soft);
+    line-height:1.75;
+    margin-bottom:36px;
+    max-width:420px;
+  }
+  .hero-btns{display:flex; gap:14px; align-items:center;}
+  .btn-explore{
+    background: linear-gradient(135deg, var(--rose-gold), var(--rose-deep));
+    color:#fff;
+    border:none;
+    padding:14px 32px;
+    border-radius:999px;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.18s;
+    box-shadow: 0 12px 28px -10px rgba(177,123,87,0.5);
+  }
+  .btn-explore:hover{filter:brightness(1.06); transform:translateY(-2px);}
+  .btn-outline{
+    background:transparent;
+    color:var(--rose-deep);
+    border:2px solid var(--rose-gold);
+    padding:13px 28px;
+    border-radius:999px;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.18s;
+  }
+  .btn-outline:hover{background:var(--beige);}
+  .hero-right{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+  }
+  .hero-blob{
+    width:420px;
+    height:420px;
+    border-radius:60% 40% 55% 45% / 50% 60% 40% 50%;
+    background: linear-gradient(145deg, var(--beige), #F0D9C8);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:160px;
+    box-shadow: 0 30px 60px -20px rgba(180,140,100,0.3);
+    animation: float 4s ease-in-out infinite;
+  }
+  @keyframes float{
+    0%,100%{transform:translateY(0);}
+    50%{transform:translateY(-14px);}
+  }
+  .float-card{
+    position:absolute;
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:12px 16px;
+    box-shadow: 0 10px 30px -10px rgba(180,140,100,0.25);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    animation: float 4s ease-in-out infinite;
+  }
+  .float-card.c1{top:30px; left:-20px; animation-delay:.5s;}
+  .float-card.c2{bottom:50px; right:-10px; animation-delay:1s;}
+  .float-card.c3{top:50%; left:-40px; animation-delay:1.5s;}
+  .float-card .fc-icon{font-size:20px;}
+  .float-card .fc-sub{font-size:11px; font-weight:400; color:var(--ink-soft);}
+  .features{
+    display:flex;
+    background:#fff;
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .feature-item{
+    flex:1;
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:28px 40px;
+    border-right:1px solid var(--line);
+  }
+  .feature-item:last-child{border-right:none;}
+  .feature-item .f-icon{font-size:26px;}
+  .feature-item .f-title{font-size:14px; font-weight:600; color:var(--ink);}
+  .feature-item .f-sub{font-size:12px; color:var(--ink-soft); margin-top:3px;}
+  .section-tag{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--rose-deep);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:12px;
+  }
+  .section-title{
+    font-family:'Playfair Display',serif;
+    font-size:38px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:18px;
+    line-height:1.2;
+  }
+  .section-text{
+    font-size:15px;
+    color:var(--ink-soft);
+    line-height:1.85;
+    margin-bottom:16px;
+  }
+  .contact-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin-bottom:16px;
+  }
+  .contact-icon{
+    width:42px; height:42px;
+    border-radius:12px;
+    background:var(--beige);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px; flex-shrink:0;
+  }
+  .contact-label{font-size:13px; font-weight:600; color:var(--ink);}
+  .contact-value{font-size:13.5px; color:var(--ink-soft); margin-top:2px;}
+  footer{
+    text-align:center;
+    padding:30px;
+    font-size:13px;
+    color:var(--ink-soft);
+    border-top:1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">🍓 Bella Bites</div>
+  <ul class="nav-links">
+    <li><a href="/">Home</a></li>
+    <li><a href="#features">Bakery</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="nav-btn" onclick="window.location.href='dashboard.html'">
+    Go to Dashboard
+  </button>
+</nav>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">🎂 Fresh Baked Daily</div>
+    <h1>The Best <span>Bread,</span><br>Cakes &amp; Pastries<br>Made with Love.</h1>
+    <p>Bella Bites brings you handcrafted baked goods made fresh every morning. Manage your bakery, track orders, and delight your customers — all in one place.</p>
+    <div class="hero-btns">
+      <button class="btn-explore" onclick="window.location.href='dashboard.html'">
+        Explore Dashboard
+      </button>
+      <button class="btn-outline" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">
+        Learn More
+      </button>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-blob">🍰</div>
+    <div class="float-card c1">
+      <span class="fc-icon">🧁</span>
+      <div>
+        <div>Products</div>
+        <div class="fc-sub">Manage inventory</div>
+      </div>
+    </div>
+    <div class="float-card c2">
+      <span class="fc-icon">🧾</span>
+      <div>
+        <div>Orders</div>
+        <div class="fc-sub">Track &amp; fulfill</div>
+      </div>
+    </div>
+    <div class="float-card c3">
+      <span class="fc-icon">🧑‍🤝‍🧑</span>
+      <div>
+        <div>Customers</div>
+        <div class="fc-sub">Build relationships</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="features" id="features">
+  <div class="feature-item">
+    <span class="f-icon">📦</span>
+    <div>
+      <div class="f-title">Inventory Tracking</div>
+      <div class="f-sub">Always know your stock levels</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="f-icon">🧾</span>
+    <div>
+      <div class="f-title">Order Management</div>
+      <div class="f-sub">Place and track orders easily</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="f-icon">👩‍🍳</span>
+    <div>
+      <div class="f-title">Staff Management</div>
+      <div class="f-sub">Manage your team and roles</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <span class="f-icon">💰</span>
+    <div>
+      <div class="f-title">Revenue Insights</div>
+      <div class="f-sub">Track your total earnings</div>
+    </div>
+  </div>
+</div>
+
+<div id="about" style="padding:70px 80px; background:var(--beige);">
+  <div style="max-width:700px;">
+    <div class="section-tag">Our Story</div>
+    <div class="section-title">About Bella Bites</div>
+    <p class="section-text">Bella Bites is a family-owned bakery dedicated to bringing you the finest handcrafted baked goods. From celebration cakes to fresh daily bread, every item is made with love and the finest ingredients.</p>
+    <p class="section-text">We believe that great baking is an art — and we pour our hearts into every loaf, every cake, and every pastry that leaves our kitchen.</p>
+  </div>
+</div>
+
+<div id="contact" style="padding:70px 80px; background:#fff;">
+  <div style="max-width:700px;">
+    <div class="section-tag">Get In Touch</div>
+    <div class="section-title">Contact Us</div>
+    <div class="contact-item">
+      <div class="contact-icon">📍</div>
+      <div>
+        <div class="contact-label">Location</div>
+        <div class="contact-value">Karachi, Pakistan</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📞</div>
+      <div>
+        <div class="contact-label">Phone</div>
+        <div class="contact-value">0300-1234567</div>
+      </div>
+    </div>
+    <div class="contact-item">
+      <div class="contact-icon">📧</div>
+      <div>
+        <div class="contact-label">Email</div>
+        <div class="contact-value">hello@bellabites.pk</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Bella Bites. All rights reserved. Made with 🍓
+</footer>
+
+</body>
+</html>
