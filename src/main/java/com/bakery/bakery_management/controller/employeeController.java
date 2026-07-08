@@ -3,33 +3,46 @@ package com.bakery.bakery_management.controller;
 import com.bakery.bakery_management.model.employee;
 import com.bakery.bakery_management.repository.employeerepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import org.springframework.http.ResponseEntity;
+import java.util.Map;
 
 @RestController
-@RequestMapping("/employees") // Browser mein localhost:8080/employees se chalega
+@RequestMapping("/employees")
 public class employeeController {
 
     @Autowired
     private employeerepository employeeRepository;
 
-    // 1. Saare Employees dekhne ke liye (GET)
     @GetMapping
-    public List<employee> getAllEmployees() {
+    public List<employee> getAll() {
         return employeeRepository.findAll();
     }
 
-    // 2. Naya Employee add karne ke liye (POST)
     @PostMapping
-    public employee addEmployee(@RequestBody employee emp) {
-        return employeeRepository.save(emp);
+    public employee add(@RequestBody employee employee) {
+        return employeeRepository.save(employee);
     }
 
-    // 3. Employee delete karne ke liye by ID (DELETE)
-    @DeleteMapping("/{id}")
-    public String deleteEmployee(@PathVariable int id) {
+    @PutMapping("/{id}")
+    public employee update(@PathVariable int id, @RequestBody employee updated) {
+        employee existing = employeeRepository.findById(id).orElseThrow();
+        existing.setEmployeeName(updated.getEmployeeName());
+        existing.setRole(updated.getRole());
+        existing.setSalary(updated.getSalary());
+        return employeeRepository.save(existing);
+    }
+
+ @DeleteMapping("/{id}")
+public ResponseEntity<?> deleteEmployee(@PathVariable int id) {
+    try {
         employeeRepository.deleteById(id);
-        return "Employee deleted successfully!";
+        return ResponseEntity.ok("Deleted!");
+    } catch (Exception e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("error", "Cannot delete: this employee has assigned orders."));
     }
 }
-
+}

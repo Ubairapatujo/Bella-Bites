@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bella Bites — Employee Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8F2;
+    --beige:#F5E9DD;
+    --panel:#FFFFFF;
+    --rose-gold:#C9A27E;
+    --rose-gold-light:#E8D5C4;
+    --rose-deep:#B17B57;
+    --mint:#BFE3D0;
+    --ink:#3F332C;
+    --ink-soft:#9A8A7E;
+    --line:#EFE2D4;
+    --shadow:0 12px 32px -14px rgba(180,140,100,0.28);
+    --shadow-soft:0 4px 16px -8px rgba(180,140,100,0.2);
+    --radius:20px;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    min-height:100vh;
+  }
+
+  /* ---- Navbar ---- */
+  .navbar{
+    background:#fff;
+    border-bottom:1px solid var(--line);
+    padding:0 44px;
+    height:64px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:var(--shadow-soft);
+  }
+  .navbar-brand{
+    font-family:'Playfair Display',serif;
+    font-size:21px;
+    font-weight:700;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .navbar-right{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .emp-pill{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--beige);
+    border:1px solid var(--line);
+    padding:7px 16px;
+    border-radius:999px;
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .emp-pill .avatar{
+    width:28px;height:28px;
+    border-radius:50%;
+    background:linear-gradient(135deg,var(--rose-gold),var(--rose-deep));
+    display:flex;align-items:center;justify-content:center;
+    font-size:13px;color:#fff;font-weight:700;
+  }
+  .logout-btn{
+    background:linear-gradient(135deg,var(--rose-gold),var(--rose-deep));
+    color:#fff;
+    border:none;
+    padding:9px 20px;
+    border-radius:999px;
+    font-family:'Poppins',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    text-decoration:none;
+    transition:.18s;
+    box-shadow:0 4px 12px -6px rgba(177,123,87,0.5);
+  }
+  .logout-btn:hover{filter:brightness(1.06); transform:translateY(-1px);}
+
+  /* ---- Main ---- */
+  .main{padding:36px 44px 60px 44px;}
+
+  /* ---- Welcome Banner ---- */
+  .welcome-banner{
+    background:linear-gradient(135deg,#fff 0%,var(--beige) 100%);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px 32px;
+    margin-bottom:28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:var(--shadow-soft);
+  }
+  .welcome-banner h2{
+    font-family:'Playfair Display',serif;
+    font-size:26px;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:6px;
+  }
+  .welcome-banner p{
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .welcome-banner .banner-icon{
+    font-size:52px;
+    opacity:0.85;
+  }
+
+  /* ---- Stat Cards ---- */
+  .stat-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    margin-bottom:28px;
+  }
+  .stat-card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:24px 26px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+    transition:.2s;
+  }
+  .stat-card::after{
+    content:'';
+    position:absolute;top:-20px;right:-20px;
+    width:80px;height:80px;border-radius:50%;
+    background:radial-gradient(circle,var(--rose-gold-light),transparent 70%);
+    opacity:0.5;
+  }
+  .stat-card .ic{font-size:26px;margin-bottom:12px;}
+  .stat-card .num{
+    font-family:'Playfair Display',serif;
+    font-size:34px;font-weight:700;color:var(--ink);
+  }
+  .stat-card .lbl{
+    font-size:12.5px;color:var(--ink-soft);
+    margin-top:5px;font-weight:500;
+  }
+
+  /* ---- Card ---- */
+  .card{
+    background:#fff;
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow:var(--shadow);
+    margin-bottom:22px;
+  }
+  .card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    margin-bottom:22px;
+    padding-bottom:16px;
+    border-bottom:1px solid var(--beige);
+  }
+  .card-head h3{
+    font-family:'Playfair Display',serif;
+    font-size:19px;font-weight:600;
+  }
+  .card-head .tag{
+    font-size:11px;padding:4px 12px;border-radius:999px;
+    background:var(--beige);color:var(--rose-deep);font-weight:600;
+  }
+
+  /* ---- Table ---- */
+  table{width:100%;border-collapse:collapse;}
+  thead th{
+    text-align:left;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    padding:0 14px 12px 14px;
+    border-bottom:2px solid var(--beige);
+    font-weight:700;
+  }
+  tbody td{
+    padding:15px 14px;
+    font-size:14px;
+    border-bottom:1px solid var(--beige);
+    color:var(--ink);
+  }
+  tbody tr:hover{background:#FFFAF5;}
+  tbody tr:last-child td{border-bottom:none;}
+
+  /* ---- Badges ---- */
+  .badge{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:5px 12px;border-radius:999px;
+    font-size:11.5px;font-weight:700;
+  }
+  .badge.pending{background:#FFF3CD;color:#856404;}
+  .badge.completed{background:#E3F5EA;color:#2E7D4F;}
+  .badge.delivered{background:#D1ECF1;color:#0C5460;}
+  .badge.cancelled{background:#FCEAEA;color:#C24545;}
+
+  /* ---- Status Select ---- */
+  .status-select{
+    padding:7px 12px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    font-family:'Poppins',sans-serif;
+    font-size:13px;
+    color:var(--ink);
+    background:#FFFDFB;
+    cursor:pointer;
+    outline:none;
+    transition:.15s;
+  }
+  .status-select:focus{
+    border-color:var(--rose-gold);
+    box-shadow:0 0 0 3px rgba(201,162,126,0.16);
+  }
+
+  /* ---- Empty State ---- */
+  .empty-state{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--ink-soft);
+  }
+  .empty-state .es-icon{font-size:38px;margin-bottom:12px;opacity:0.5;}
+  .empty-state .es-title{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+  .empty-state .es-sub{font-size:13px;}
+
+  /* ---- Refresh btn ---- */
+  .refresh-btn{
+    background:none;border:none;cursor:pointer;
+    color:var(--rose-deep);font-weight:600;
+    font-size:13px;font-family:'Poppins',sans-serif;
+    display:flex;align-items:center;gap:5px;
+    transition:.15s;
+  }
+  .refresh-btn:hover{opacity:0.7;}
+
+  /* ---- Msg ---- */
+  .msg{font-size:12.5px;font-weight:600;margin-top:10px;min-height:16px;}
+  .msg.ok{color:#3F9760;}
+  .msg.err{color:#C9586E;}
+
+  /* ---- Order ID ---- */
+  .order-id{
+    font-weight:700;color:var(--rose-deep);
+    font-family:'Playfair Display',serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- ======== NAVBAR ======== -->
+<nav class="navbar">
+  <div class="navbar-brand">🍓 Bella Bites</div>
+  <div class="navbar-right">
+    <div class="emp-pill">
+      <div class="avatar" th:text="${employeeName != null ? employeeName.substring(0,1) : 'E'}">E</div>
+      <span th:text="${employeeName}">Employee</span>
+    </div>
+    <a href="/logout" class="logout-btn">Sign Out</a>
+  </div>
+</nav>
+
+<!-- ======== MAIN ======== -->
+<div class="main">
+
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div>
+      <h2>Good day, <span th:text="${employeeName}">Employee</span> 👋</h2>
+      <p>Here are your assigned orders and today's performance overview.</p>
+    </div>
+    <div class="banner-icon">🧁</div>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="ic">🧾</div>
+      <div class="num" id="totalOrders">–</div>
+      <div class="lbl">Total Assigned Orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="ic">⏳</div>
+      <div class="num" id="pendingOrders">–</div>
+      <div class="lbl">Pending Orders</div>
+    </div>
+    <div class="stat-card">
+      <div class="ic">✅</div>
+      <div class="num" id="completedOrders">–</div>
+      <div class="lbl">Completed Orders</div>
+    </div>
+  </div>
+
+  <!-- Orders Table -->
+  <div class="card">
+    <div class="card-head">
+      <h3>🧾 My Assigned Orders</h3>
+      <button class="refresh-btn" onclick="loadOrders()">⟳ Refresh</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Update Status</th>
+        </tr>
+      </thead>
+      <tbody id="orderTableBody">
+        <tr><td colspan="6">
+          <div class="empty-state">
+            <div class="es-icon">⏳</div>
+            <div class="es-title">Loading your orders...</div>
+          </div>
+        </td></tr>
+      </tbody>
+    </table>
+    <div class="msg" id="statusMsg"></div>
+  </div>
+
+</div>
+
+<script th:inline="javascript">
+  const EMPLOYEE_ID = [[${employeeId}]];
+  const API = "http://localhost:8080";
+
+  async function loadOrders(){
+    try{
+      const res = await fetch(`${API}/orders/employee/${EMPLOYEE_ID}`);
+      const data = await res.json();
+
+      document.getElementById('totalOrders').textContent = data.length;
+      document.getElementById('pendingOrders').textContent = data.filter(o=>o.status==='Pending').length;
+      document.getElementById('completedOrders').textContent = data.filter(o=>o.status==='Completed').length;
+
+      const body = document.getElementById('orderTableBody');
+
+      if(data.length===0){
+        body.innerHTML = `<tr><td colspan="6">
+          <div class="empty-state">
+            <div class="es-icon">🧾</div>
+            <div class="es-title">No orders assigned yet</div>
+            <div class="es-sub">Your manager will assign orders to you soon.</div>
+          </div>
+        </td></tr>`;
+        return;
+      }
+
+      body.innerHTML = data.map(o=>`
+        <tr>
+          <td><span class="order-id">#${o.orderId}</span></td>
+          <td>${o.customer ? o.customer.fullName : 'Unknown'}</td>
+          <td>${o.orderDate ? new Date(o.orderDate).toLocaleDateString('en-PK',{day:'numeric',month:'short',year:'numeric'}) : '—'}</td>
+          <td><strong>Rs. ${(o.totalAmount??0).toLocaleString()}</strong></td>
+          <td><span class="badge ${(o.status||'Pending').toLowerCase()}">${o.status||'Pending'}</span></td>
+          <td>
+            <select class="status-select" onchange="updateStatus(${o.orderId}, this.value)">
+              <option value="Pending"   ${o.status==='Pending'   ?'selected':''}>⏳ Pending</option>
+              <option value="Completed" ${o.status==='Completed' ?'selected':''}>✅ Completed</option>
+              <option value="Delivered" ${o.status==='Delivered' ?'selected':''}>🚚 Delivered</option>
+              <option value="Cancelled" ${o.status==='Cancelled' ?'selected':''}>❌ Cancelled</option>
+            </select>
+          </td>
+        </tr>`).join('');
+
+    }catch(e){
+      document.getElementById('orderTableBody').innerHTML=`<tr><td colspan="6">
+        <div class="empty-state">
+          <div class="es-icon">⚠️</div>
+          <div class="es-title">Could not load orders</div>
+          <div class="es-sub">Please refresh the page.</div>
+        </div>
+      </td></tr>`;
+    }
+  }
+
+  async function updateStatus(orderId, status){
+    try{
+      await fetch(`${API}/orders/${orderId}/status`,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({status:status})
+      });
+      const msg = document.getElementById('statusMsg');
+      msg.textContent = `Order #${orderId} updated to "${status}" successfully.`;
+      msg.className = 'msg ok';
+      setTimeout(()=>{msg.textContent='';},3000);
+      loadOrders();
+    }catch(e){
+      const msg = document.getElementById('statusMsg');
+      msg.textContent = 'Update failed. Please try again.';
+      msg.className = 'msg err';
+    }
+  }
+
+  loadOrders();
+</script>
+
+</body>
+</html>

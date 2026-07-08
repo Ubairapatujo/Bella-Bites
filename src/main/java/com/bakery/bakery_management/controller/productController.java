@@ -10,29 +10,31 @@ import java.util.List;
 @RequestMapping("/products")
 public class productController {
 
-  @Autowired
-private productrepository productrepository;
-
-
-    // GET — saare products dekho
-    // Browser mein: localhost:8080/products
+    @Autowired
+    private productrepository productRepository;
 
     @GetMapping
-    public List<product> getAllProducts() {
-        return productrepository.findAll();
+    public List<product> getAll() {
+        return productRepository.findAll();
     }
 
-
-    // POST — naya product add karo
     @PostMapping
-    public product addProduct(@RequestBody product product) {
-        return productrepository.save(product);
+    public product add(@RequestBody product product) {
+        return productRepository.save(product);
     }
 
-    // DELETE — product delete karo by ID
+    @PutMapping("/{id}")
+    public product update(@PathVariable int id, @RequestBody product updated) {
+        product existing = productRepository.findById(id).orElseThrow();
+        existing.setProductName(updated.getProductName());
+        existing.setPrice(updated.getPrice());
+        existing.setStockQty(updated.getStockQty());
+        return productRepository.save(existing);
+    }
+
     @DeleteMapping("/{id}")
-    public String deleteProduct(@PathVariable int id) {
-        productrepository.deleteById(id);
-        return "Product deleted!";
+    public String delete(@PathVariable int id) {
+        productRepository.deleteById(id);
+        return "Deleted!";
     }
 }

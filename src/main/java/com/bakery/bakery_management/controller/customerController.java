@@ -1,4 +1,5 @@
 package com.bakery.bakery_management.controller;
+
 import com.bakery.bakery_management.model.customer;
 import com.bakery.bakery_management.repository.customerrepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,14 @@ public class customerController {
     @PostMapping
     public customer add(@RequestBody customer customer) {
         return customerRepository.save(customer);
+    }
+
+    @PutMapping("/{id}")
+    public customer update(@PathVariable int id, @RequestBody customer updated) {
+        customer existing = customerRepository.findById(id).orElseThrow();
+        existing.setFullName(updated.getFullName());
+        existing.setPhone(updated.getPhone());
+        return customerRepository.save(existing);
     }
 
     @DeleteMapping("/{id}")
